@@ -6,36 +6,7 @@ import SearchBar from '@/app/components/searchbar';
 import { getResponses, searchSimilarResponses } from '@/app/api';
 import React from 'react';
 import { IResponse } from '@/app/api/interfaces';
-
-const Response = ({ response }: { response: IResponse }) => {
-  return (
-    <tr className="text-sm">
-      <td>{response.id}</td>
-      <td>{response.response}</td>
-      <td>{response.similarity_score?.toFixed(2)}</td>
-    </tr>
-  );
-};
-
-const Responses = ({ responses }: { responses: IResponse[] }) => {
-  console.log(responses);
-  return (
-    <table className="w-full border-separate border-spacing-2 table-fixed">
-      <thead>
-        <tr className="border-b border-black">
-          <th className="text-left w-[15%]">Response ID</th>
-          <th className="text-left w-[70%]">Ressponse</th>
-          <th className="text-left w-[15%]">Similarity Score</th>
-        </tr>
-      </thead>
-      <tbody>
-        {responses?.map((response: IResponse, i) => {
-          return <Response key={i} response={response} />;
-        })}
-      </tbody>
-    </table>
-  );
-};
+import Responses from '@/app/components/responses';
 
 export default function SimilarResponses({
   questionid,

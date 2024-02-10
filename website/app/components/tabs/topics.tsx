@@ -15,12 +15,13 @@ import Dropdown from '@/app/components/dropdown';
 import Responses from '@/app/components/responses';
 import React from 'react';
 import { IResponse } from '@/app/api/interfaces';
+import { useLocalStorage } from 'usehooks-ts';
 
 interface ITopic {
-  topic_id: string; // id
-  chart_data: any; // chart data
-  average_sentiment: number; // sentiment value
-  topic_count: number; // number of responses
+  0: string; // id
+  1: any; // chart data
+  2: number; // sentiment value
+  3: number; // number of responses
 }
 
 interface IOption {
@@ -36,14 +37,18 @@ export default function Page({ questionid }: { questionid: string }) {
   const [wordsLimit, setWordsLimit] = useState(10);
   const [filteredResponses, setFilteredResponses] = useState<IResponse[]>([]);
   const [topics, setTopics] = useState<IOption[]>([]);
-  const [selectedTopic, setSelectedTopic] = useState<IOption>({
+  const [selectedTopic, setSelectedTopic] = useLocalStorage('selectedTopic', {
     label: 'Select a topic',
     value: '',
   });
+  const [rendered, setRendered] = useState(false);
 
   useEffect(() => {
     window.scrollTo(0, 0);
     const fetchData = async () => {
+      if (selectedTopic === null) {
+        setSelectedTopic({ label: 'Select a topic', value: '' });
+      }
       if (selectedTopic.value === '') {
         const responsesData: any = await getResponses(
           questionid,
@@ -76,6 +81,7 @@ export default function Page({ questionid }: { questionid: string }) {
         wordsLimit
       );
       setSelectedTopics(commonTopicsData);
+      setRendered(true);
     };
     fetchData();
   }, [offset, limit]);
@@ -95,31 +101,33 @@ export default function Page({ questionid }: { questionid: string }) {
     const topWordsData: any = await getTopWords(topic, wordsLimit);
     setSelectedTopics([
       {
-        topic_id: topic,
-        chart_data: topWordsData,
-        average_sentiment: 0,
-        topic_count: numWordsData,
+        0: topic,
+        1: topWordsData,
+        2: 0,
+        3: numWordsData,
       },
     ]);
   };
 
   return (
-    <div className="flex w-full flex-col gap-4 items-center justify-center">
-      {topics && topics.length > 0 && (
-        <Dropdown
-          options={topics}
-          initialOption={selectedTopic}
-          onOptionClick={filterTopics}
-        />
-      )}
-      {/* {selectedTopics?.length > 0 && <CommonTopics topics={selectedTopics} />} */}
-      <Responses responses={filteredResponses} />
-      <div className="flex justify-center items-center w-full gap-4">
-        <Button onClick={() => setOffset(Math.max(offset - limit, 0))}>
-          Previous
-        </Button>
-        <Button onClick={() => setOffset(offset + limit)}>Next</Button>
+    rendered && (
+      <div className="flex w-full flex-col gap-4 items-center justify-center">
+        {topics && topics.length > 0 && (
+          <Dropdown
+            options={topics}
+            initialOption={selectedTopic}
+            onOptionClick={filterTopics}
+          />
+        )}
+        {selectedTopics?.length > 0 && <CommonTopics topics={selectedTopics} />}
+        <Responses responses={filteredResponses} />
+        <div className="flex justify-center items-center w-full gap-4">
+          <Button onClick={() => setOffset(Math.max(offset - limit, 0))}>
+            Previous
+          </Button>
+          <Button onClick={() => setOffset(offset + limit)}>Next</Button>
+        </div>
       </div>
-    </div>
+    )
   );
 }

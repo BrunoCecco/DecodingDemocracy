@@ -8,6 +8,7 @@ import FreeText from '@/app/components/tabs/freetext';
 import SimilarResponses from '@/app/components/tabs/similarresponses';
 import Topics from '@/app/components/tabs/topics';
 import Sentiment from '@/app/components/tabs/sentiment';
+import { useLocalStorage } from 'usehooks-ts';
 
 const Tabs = ({ children }: any) => {
   return (
@@ -39,8 +40,9 @@ export default function Page({
 }) {
   const [question, setQuestion] = useState('');
   const [isMultipleChoice, setIsMultipleChoice] = useState(false);
-  const [selectedTab, setSelectedTab] = useState(0);
   const [multipleChoiceData, setMultipleChoiceData] = useState<any>([]);
+  const [selectedTab, setSelectedTab] = useLocalStorage('selectedTab', 0);
+  const [rendered, setRendered] = useState(false);
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -54,11 +56,12 @@ export default function Page({
         const mcData: any = await getMultipleChoice(params.questionid);
         setMultipleChoiceData(mcData);
       }
+      setRendered(true);
     };
     fetchData();
   }, []);
 
-  return (
+  return rendered ? (
     <main className="flex min-h-screen flex-col items-center justify-between p-24">
       <div className="w-full flex flex-col items-center justify-between gap-8 pt-8 overflow-auto relative">
         <div className="font-bold text-lg">{question}</div>
@@ -103,5 +106,9 @@ export default function Page({
         )}
       </div>
     </main>
+  ) : (
+    <div className="flex h-screen w-full items-center justify-center">
+      <h1>Loading...</h1>
+    </div>
   );
 }

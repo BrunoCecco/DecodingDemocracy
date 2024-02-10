@@ -11,10 +11,10 @@ import { Bar } from 'react-chartjs-2';
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip);
 
 interface ITopic {
-  topic_id: string;
-  chart_data: any;
-  average_sentiment: number;
-  topic_count: number;
+  0: string; // id
+  1: any; // chart data
+  2: number; // sentiment value
+  3: number; // number of responses
 }
 
 const options = {
@@ -51,6 +51,7 @@ const options = {
 };
 
 const CommonTopics = ({ topics }: { topics: ITopic[] }) => {
+  console.log(topics);
   return (
     <div className="mt-8 flex flex-col items-center">
       <h2>Most Common Topics</h2>
@@ -62,11 +63,10 @@ const CommonTopics = ({ topics }: { topics: ITopic[] }) => {
               className="h-[300px] w-[400px] text-center flex flex-col items-center"
             >
               <div>
-                Topic {topic.topic_id?.split('-')[2]} ({topic.topic_count}{' '}
-                responses)
+                Topic {topic[0]?.split('-')[2]} ({topic[3]} responses)
               </div>
-              <Bar data={topic.chart_data} options={options} />
-              <div>Average sentiment: {topic.average_sentiment}</div>
+              <Bar data={topic[1]} options={options} />
+              <div>Average sentiment: {topic[2]}</div>
             </div>
           );
         })}
