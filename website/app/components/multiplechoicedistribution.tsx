@@ -11,8 +11,8 @@ import { Bar } from 'react-chartjs-2';
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip);
 
 interface IOption {
-  0: string; // option
-  1: number; // number of responses
+  response: string; // option
+  response_count: number; // number of responses
 }
 
 const options = {
@@ -50,11 +50,11 @@ const options = {
 
 const MultipleChoiceDistribution = ({ data }: { data: IOption[] }) => {
   const chartData = {
-    labels: data.map((option) => option[0]),
+    labels: data.map((option) => option.response),
     datasets: [
       {
         label: 'MMultiple Choice Distribution',
-        data: data.map((option) => option[1]),
+        data: data.map((option) => option.response_count),
         backgroundColor: ['rgba(75, 192, 192, 0.2)', 'rgba(255, 99, 132, 0.2)'],
         borderColor: ['rgba(75, 192, 192, 1)', 'rgba(255, 99, 132, 1)'],
         borderWidth: 1,

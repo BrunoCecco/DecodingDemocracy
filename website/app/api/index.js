@@ -58,18 +58,18 @@ export const getTopics = async (questionid) => {
 
 export const getTopWords = async (topic, limit) => {
   const data = await getRequest(`/api/topics/topwords/${topic}?limit=${limit}`);
-  const chartData = {
-    labels: data.map((item) => item[0]),
+  const chart_data = {
+    labels: data.map((item) => item.word),
     datasets: [
       {
-        data: data.map((item) => item[1]),
+        data: data.map((item) => item.word_value),
         backgroundColor: 'rgba(75, 192, 192, 0.6)',
         borderColor: 'rgba(75, 192, 192, 1)',
         borderWidth: 1,
       },
     ],
   };
-  return chartData;
+  return chart_data;
 };
 
 export const getNumWordsForTopic = async (topic) => {
@@ -84,20 +84,25 @@ export const getCommonTopics = async (questionid, topicsLimit, wordsLimit) => {
   // get common words for each topic
   const promises = topics.map(async (topic) => {
     const data = await getRequest(
-      `/api/topics/topwords/${topic[0]}?limit=${wordsLimit}`
+      `/api/topics/topwords/${topic.topic_id}?limit=${wordsLimit}`
     );
-    const chartData = {
-      labels: data.map((item) => item[0]),
+    const chart_data = {
+      labels: data.map((item) => item.word),
       datasets: [
         {
-          data: data.map((item) => item[1]),
+          data: data.map((item) => item.word_value),
           backgroundColor: 'rgba(75, 192, 192, 0.6)',
           borderColor: 'rgba(75, 192, 192, 1)',
           borderWidth: 1,
         },
       ],
     };
-    return [topic[0], chartData, topic[1], topic[2]];
+    return [
+      topic.topic_id,
+      chart_data,
+      topic.average_sentiment,
+      topic.topic_count,
+    ];
   });
 
   const topicsWithWords = await Promise.all(promises);

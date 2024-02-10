@@ -44,13 +44,13 @@ def search_responses(question_id, search_term):
 def sentiment_distribution(question_id):    
     conn = get_db_connection()
     c = conn.cursor()
-    c.execute('''SELECT SUM(CASE WHEN sentiment_value > 0 THEN sentiment_value ELSE 0 END) AS positive_sentiment,
-                SUM(CASE WHEN sentiment_value < 0 THEN sentiment_value ELSE 0 END) AS negative_sentiment                   
+    c.execute('''SELECT SUM(CASE WHEN sentiment_value > 0 THEN sentiment_value ELSE 0 END) AS positive,
+                SUM(CASE WHEN sentiment_value < 0 THEN sentiment_value ELSE 0 END) AS negative
                 FROM Response
                 WHERE question_id = ?''', (question_id,))
-    positive, negative = c.fetchone()
+    res = c.fetchone()
     conn.close()    
-    return jsonify({'positive': positive, 'negative': negative})
+    return jsonify(res)
 
 # get multiplce choice options and their counts for a given question
 @bp.route('/multiplechoice/<string:question_id>', methods=['GET'])
@@ -59,13 +59,13 @@ def multiple_choice(question_id):
     c = conn.cursor()
     c.execute('''SELECT response, COUNT(response) as response_count
                 FROM Response
-                WHERE question_id = ?
+                WHERE question_id = ? AND COUNT(response) > 0
                 GROUP BY response
                 ORDER BY response_count DESC
                 ''', (question_id,))
     multiple_choice = c.fetchall()    
     conn.close()    
-    return jsonify([mc for mc in multiple_choice if mc[0] is not None])
+    return jsonify(multiple_choice)
 
 # get most similar response by using cosine similarity
 @bp.route('/similar/<string:question_id>/<string:text>', methods=['GET'])
@@ -75,16 +75,16 @@ def similar_responses(question_id, text):
     offset = int(request.args.get('offset'))
     limit = int(request.args.get('limit'))
     c.execute('''
-        SELECT response_embeddings FROM Question
+        SELECT response_embeddings as embeddings FROM Question
         WHERE id = ?''', (question_id,))
-    embeddings_blob = c.fetchone()[0]
+    res = c.fetchone()    
     # Convert embedding to numpy array
-    response_embeddings = np.frombuffer(embeddings_blob, dtype=np.float32)
+    response_embeddings = np.frombuffer(res['embeddings'], dtype=np.float32)
 
     c.execute('''
-        SELECT MIN(id) FROM Response
+        SELECT MIN(id) as id FROM Response
         WHERE question_id = ?''', (question_id,))
-    first_resp_id = c.fetchone()[0]
+    first_resp_id = c.fetchone()    
     
     preprocessed = " ".join(pre_process(text,stopwords))
     emb = model.encode(preprocessed, convert_to_tensor=True)
@@ -100,10 +100,13 @@ def similar_responses(question_id, text):
     responses = []
     for index, row in result_df.iterrows():
         if row["score"]>=0.8:
-            response_id = int(row['id']) + int(first_resp_id)            
-            c.execute('SELECT response FROM Response WHERE id = ?', (response_id,))
-            resp = c.fetchone()[0]
-            responses.append({'response': resp, 'score': row['score'], 'id': response_id})
+            response_id = int(row['id']) + int(first_resp_id['id'])            
+            c.execute('SELECT * FROM Response WHERE id = ?', (response_id,))
+            resp = c.fetchone()
+            resp_object = {'similarity_score': row['score']}
+            for key in resp.keys():
+                resp_object[key] = resp[key]
+            responses.append(resp_object)
     print("answers above threshold %s vs total answers %s" % (len(responses), len(result_df.index)))            
     conn.close()
     return jsonify(responses[offset:offset+limit])

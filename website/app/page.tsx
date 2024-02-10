@@ -5,8 +5,17 @@ import Link from 'next/link';
 import { FaSearch } from 'react-icons/fa';
 import { useEffect, useState } from 'react';
 
+interface IConsultation {
+  id: number;
+  consultation_name: string;
+  date: string;
+  published_responses_link: string;
+  government_analysis_link: string;
+  prerequisite_material_link: string;
+}
+
 export default function Home() {
-  const [consultations, setConsultations] = useState([]);
+  const [consultations, setConsultations] = useState<IConsultation[]>([]);
 
   useEffect(() => {
     console.log('fetching consultations');
@@ -30,9 +39,9 @@ export default function Home() {
                 <Link
                   key={i}
                   className="p-8 mt-12 rounded bg-white shadow-md w-full hover:scale-105 transition-all duration-100"
-                  href={`/consultation/${consultation[0]}`}
+                  href={`/consultation/${consultation.id}`}
                 >
-                  {consultation[1]}
+                  {consultation.consultation_name}
                 </Link>
               );
             })}

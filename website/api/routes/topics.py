@@ -40,6 +40,7 @@ def common_topics(question_id):
                 ''', (question_id, limit))
     topics = c.fetchall()    
     conn.close()
+    print(topics)
     return jsonify(topics)
 
 # get most common words and their scores in a topic

@@ -5,24 +5,20 @@ import Button from '@/app/components/button';
 import SearchBar from '@/app/components/searchbar';
 import { getResponses, searchSimilarResponses } from '@/app/api';
 import React from 'react';
-
-interface IResponse {
-  id: number;
-  response: string;
-  score: number;
-}
+import { IResponse } from '@/app/api/interfaces';
 
 const Response = ({ response }: { response: IResponse }) => {
   return (
     <tr className="text-sm">
       <td>{response.id}</td>
       <td>{response.response}</td>
-      <td>{response.score.toFixed(2)}</td>
+      <td>{response.similarity_score?.toFixed(2)}</td>
     </tr>
   );
 };
 
 const Responses = ({ responses }: { responses: IResponse[] }) => {
+  console.log(responses);
   return (
     <table className="w-full border-separate border-spacing-2 table-fixed">
       <thead>
@@ -33,7 +29,7 @@ const Responses = ({ responses }: { responses: IResponse[] }) => {
         </tr>
       </thead>
       <tbody>
-        {responses.map((response: IResponse, i) => {
+        {responses?.map((response: IResponse, i) => {
           return <Response key={i} response={response} />;
         })}
       </tbody>

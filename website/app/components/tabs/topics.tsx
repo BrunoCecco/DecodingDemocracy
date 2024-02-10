@@ -14,22 +14,13 @@ import CommonTopics from '@/app/components/commontopics';
 import Dropdown from '@/app/components/dropdown';
 import Responses from '@/app/components/responses';
 import React from 'react';
-
-interface IResponse {
-  0: number; // id
-  1: string; // question_id
-  2: number; // responder_id
-  3: string; // response
-  4: number; // consultation_id
-  5: number; // sentiment value
-  6: string; // primary topic
-}
+import { IResponse } from '@/app/api/interfaces';
 
 interface ITopic {
-  0: string; // id
-  1: any; // chart data
-  2: number; // sentiment value
-  3: number; // number of responses
+  topic_id: string; // id
+  chart_data: any; // chart data
+  average_sentiment: number; // sentiment value
+  topic_count: number; // number of responses
 }
 
 interface IOption {
@@ -74,8 +65,8 @@ export default function Page({ questionid }: { questionid: string }) {
       setTopics(
         topicsData.map((topic: any) => {
           return {
-            label: topic[0] + ': ' + topic[1] + ' responses',
-            value: topic[0],
+            label: topic.topic_id + ': ' + topic.topic_count + ' responses',
+            value: topic.topic_id,
           };
         })
       );
@@ -104,10 +95,10 @@ export default function Page({ questionid }: { questionid: string }) {
     const topWordsData: any = await getTopWords(topic, wordsLimit);
     setSelectedTopics([
       {
-        0: topic,
-        1: topWordsData,
-        2: 0,
-        3: numWordsData,
+        topic_id: topic,
+        chart_data: topWordsData,
+        average_sentiment: 0,
+        topic_count: numWordsData,
       },
     ]);
   };
@@ -121,7 +112,7 @@ export default function Page({ questionid }: { questionid: string }) {
           onOptionClick={filterTopics}
         />
       )}
-      {selectedTopics?.length > 0 && <CommonTopics topics={selectedTopics} />}
+      {/* {selectedTopics?.length > 0 && <CommonTopics topics={selectedTopics} />} */}
       <Responses responses={filteredResponses} />
       <div className="flex justify-center items-center w-full gap-4">
         <Button onClick={() => setOffset(Math.max(offset - limit, 0))}>

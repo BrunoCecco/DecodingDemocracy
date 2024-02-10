@@ -18,10 +18,17 @@ const Header = () => {
   );
 
   useEffect(() => {
-    setInitialOption({
-      label: 'Consultation ' + pathname.split('/')[2],
-      value: pathname.split('/')[2],
-    });
+    if (pathname.includes('/consultation')) {
+      setInitialOption({
+        label: 'Consultation ' + pathname.split('/')[2],
+        value: pathname.split('/')[2],
+      });
+    } else {
+      setInitialOption({
+        label: 'Select a consultation',
+        value: '',
+      });
+    }
   }, [pathname]);
 
   const handleOptionClick = (option: string) => {

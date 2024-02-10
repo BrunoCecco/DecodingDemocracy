@@ -6,16 +6,7 @@ import SearchBar from '@/app/components/searchbar';
 import { getResponses, searchResponses } from '@/app/api';
 import Responses from '@/app/components/responses';
 import React from 'react';
-
-interface IResponse {
-  0: number; // id
-  1: string; // question_id
-  2: number; // responder_id
-  3: string; // response
-  4: number; // consultation_id
-  5: number; // sentiment value
-  6: string; // primary topic
-}
+import { IResponse } from '@/app/api/interfaces';
 
 export default function FreeText({ questionid }: { questionid: string }) {
   const [responses, setResponses] = useState<IResponse[]>([]);

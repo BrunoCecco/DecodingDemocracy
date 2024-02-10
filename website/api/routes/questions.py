@@ -8,8 +8,7 @@ def questions(consultation_id):
     conn = get_db_connection()
     c = conn.cursor()    
     c.execute('SELECT id, consultation_id, question, multiplechoice FROM Question WHERE consultation_id = ?', (consultation_id,))
-    questions = c.fetchall()    
-    conn.close()
+    questions = c.fetchall()           
     return jsonify(questions)
 
 @bp.route('/<string:question_id>', methods=['GET'])
@@ -27,8 +26,8 @@ def wordcloud(question_id):
     conn = get_db_connection()
     c = conn.cursor()
     c.execute('SELECT wordcloud FROM Question WHERE id = ?', (question_id,))
-    wordcloud = c.fetchone()[0]
+    wordcloud = c.fetchone()
     conn.close()
-    return wordcloud
+    return jsonify(wordcloud)
     
     

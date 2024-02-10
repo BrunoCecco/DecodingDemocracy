@@ -4,10 +4,10 @@ import { useEffect, useState } from 'react';
 import { getQuestion, getMultipleChoice } from '@/app/api';
 import MultipleChoiceDistribution from '@/app/components/multiplechoicedistribution';
 import React from 'react';
-import FreeText from '@/app/components/freetext';
-import SimilarResponses from '@/app/components/similarresponses';
-import Topics from '@/app/components/topics';
-import Sentiment from '@/app/components/sentiment';
+import FreeText from '@/app/components/tabs/freetext';
+import SimilarResponses from '@/app/components/tabs/similarresponses';
+import Topics from '@/app/components/tabs/topics';
+import Sentiment from '@/app/components/tabs/sentiment';
 
 const Tabs = ({ children }: any) => {
   return (
@@ -47,8 +47,8 @@ export default function Page({
     const fetchData = async () => {
       const questionData: any = await getQuestion(params.questionid);
 
-      setQuestion(questionData[2]);
-      if (questionData[3] == 1) {
+      setQuestion(questionData.question);
+      if (questionData.multiplechoice == 1) {
         setIsMultipleChoice(true);
         setSelectedTab(-1);
         const mcData: any = await getMultipleChoice(params.questionid);

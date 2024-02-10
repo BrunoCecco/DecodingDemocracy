@@ -6,18 +6,22 @@ import { useEffect, useState } from 'react';
 import { FaSearch } from 'react-icons/fa';
 
 interface IQuestion {
-  0: string;
-  1: number;
-  2: string;
-  3: number;
+  consultation_id: number;
+  id: string;
+  multiplechoice: number;
+  question: string;
+}
+
+interface IConsultation {
+  consultation_name: string;
+  date: string;
+  published_responses_link: string;
+  government_analysis_link: string;
+  prerequisite_material_link: string;
 }
 
 export default function Page({ params }: { params: { id: string } }) {
-  const [name, setName] = useState('');
-  const [date, setDate] = useState('');
-  const [link, setLink] = useState('');
-  const [analysisLink, setAnalysisLink] = useState('');
-  const [prereqLink, setPrereqLink] = useState('');
+  const [consultation, setConsultation] = useState<any>({});
   const [filteredQuestions, setFilteredQuestions] = useState<IQuestion[]>([]); // [id, consultation_id, question, multiplechoice]
   const [questions, setQuestions] = useState<IQuestion[]>([]);
 
@@ -25,11 +29,7 @@ export default function Page({ params }: { params: { id: string } }) {
     fetch('/api/consultations/' + params.id)
       .then((response) => response.json())
       .then((data) => {
-        setName(data[1]);
-        setDate(data[2]);
-        setLink(data[3]);
-        setAnalysisLink(data[4]);
-        setPrereqLink(data[5]);
+        setConsultation(data);
       })
       .catch((err) => console.log(err, 'err'));
 
@@ -44,7 +44,7 @@ export default function Page({ params }: { params: { id: string } }) {
   const searchQuestions = (term: string) => {
     // filter questions based on search term
     const filtered = questions.filter((question) => {
-      return question[2].toLowerCase().includes(term.toLowerCase());
+      return question.question.toLowerCase().includes(term.toLowerCase());
     });
     setFilteredQuestions(filtered);
     if (term === '') {
@@ -55,18 +55,30 @@ export default function Page({ params }: { params: { id: string } }) {
   return (
     <main className="flex min-h-screen flex-col items-center justify-between p-24">
       <div className="w-full flex flex-col items-center justify-between gap-8">
-        <h1>{name}</h1>
+        <h1>{consultation.consultation_name}</h1>
         <div className="font-bold">
-          Date: {new Date(date).toLocaleDateString()}
+          Date: {new Date(consultation.date).toLocaleDateString()}
         </div>
         <div className="flex items-center justify-center gap-4">
-          <a href={link} target="_blank" className="underline">
+          <a
+            href={consultation.published_responses_url}
+            target="_blank"
+            className="underline"
+          >
             Consultation Link
           </a>
-          <a href={analysisLink} target="_blank" className="underline">
+          <a
+            href={consultation.government_analysis_url}
+            target="_blank"
+            className="underline"
+          >
             Public Analysis Link
           </a>
-          <a href={prereqLink} target="_blank" className="underline">
+          <a
+            href={consultation.prerequisite_material_url}
+            target="_blank"
+            className="underline"
+          >
             Prerequisite Material Link
           </a>
         </div>
@@ -87,9 +99,9 @@ export default function Page({ params }: { params: { id: string } }) {
                 <Link
                   key={i}
                   className="p-8 mt-12 rounded bg-white shadow-md w-full hover:scale-[101%] transition-all duration-100"
-                  href={`/consultation/${params.id}/${question[0]}`}
+                  href={`/consultation/${params.id}/${question?.id}`}
                 >
-                  {question[2]}
+                  {question?.question}
                 </Link>
               );
             })}

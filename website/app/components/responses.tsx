@@ -1,23 +1,24 @@
 import React from 'react';
 
 interface IResponse {
-  0: number; // id
-  1: string; // question_id
-  2: number; // responder_id
-  3: string; // response
-  4: number; // consultation_id
-  5: number; // sentiment value
-  6: string; // primary topic
+  id: number;
+  question_id: string;
+  responder_id: number;
+  response: string;
+  consultation_id: number;
+  sentiment_value?: number;
+  topic_id: string;
+  similarity_score?: number;
 }
 
 const Response = ({ response }: { response: IResponse }) => {
   return (
     <tr className="text-sm">
-      <td>{response[0]}</td>
-      <td>{response[2]}</td>
-      <td>{response[3]}</td>
-      <td>{response[5] || 'n/a'}</td>
-      <td>{response[6]?.split('-')[2] || 'n/a'}</td>
+      <td className="text-left">{response.id}</td>
+      <td className="text-left">{response.responder_id}</td>
+      <td className="text-left">{response.response}</td>
+      <td className="text-left">{response.sentiment_value || 'n/a'}</td>
+      <td className="text-left">{response.topic_id?.split('-')[2] || 'n/a'}</td>
     </tr>
   );
 };
@@ -35,7 +36,7 @@ const Responses = ({ responses }: { responses: IResponse[] }) => {
         </tr>
       </thead>
       <tbody>
-        {responses.map((response: IResponse, i) => {
+        {responses?.map((response: IResponse, i) => {
           return <Response key={i} response={response} />;
         })}
       </tbody>
