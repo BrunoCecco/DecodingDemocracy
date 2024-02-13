@@ -102,16 +102,18 @@ def similar_responses(question_id, text):
 
     result_df = semantic_similarity_text(emb, reshaped_embeddings)
 
-    responses = []
+    responses = []    
     for index, row in result_df.iterrows():
-        if row["score"]>=0.7:
-            response_id = int(row['id']) + int(first_resp_id['id'])            
-            c.execute('SELECT * FROM Response WHERE id = ?', (response_id,))
-            resp = c.fetchone()
-            resp_object = {'similarity_score': row['score']}
-            for key in resp.keys():
-                resp_object[key] = resp[key]
-            responses.append(resp_object)
-    print("answers above threshold %s vs total answers %s" % (len(responses), len(result_df.index)))            
+        responses.append({'id': int(row['id']) + int(first_resp_id['id']), 'similarity_score': row['score']})
+    
+    ret = []
+    for i in range(offset, offset+limit):            
+        response_id = responses[i]['id']
+        c.execute('SELECT * FROM Response WHERE id = ?', (response_id,))
+        resp = c.fetchone()
+        resp_object = {'similarity_score': responses[i]['similarity_score']}
+        for key in resp.keys():
+            resp_object[key] = resp[key]
+        ret.append(resp_object)    
     conn.close()
-    return jsonify(responses[offset:offset+limit])
+    return jsonify(ret)
