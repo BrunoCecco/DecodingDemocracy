@@ -76,7 +76,18 @@ def num_responses(topic_id):
     conn = get_db_connection()
     c = conn.cursor()    
     print(topic_id)
-    c.execute('SELECT COUNT(*) FROM Response WHERE topic_id = ?', (topic_id,))
+    c.execute('SELECT COUNT(*) as topic_count FROM Response WHERE topic_id = ?', (topic_id,))
     count = c.fetchone()
     conn.close()
     return jsonify(count)
+
+# get average sentiment for a given topic
+@bp.route('/averagesentiment/<string:topic_id>', methods=['GET'])
+def average_sentiment(topic_id):
+    conn = get_db_connection()
+    c = conn.cursor()    
+    print(topic_id, 'topic_od')
+    c.execute('SELECT ROUND(AVG(sentiment_value),3) as average_sentiment FROM Response WHERE topic_id = ?', (topic_id,))
+    average_sentiment = c.fetchone()
+    conn.close()
+    return jsonify(average_sentiment)

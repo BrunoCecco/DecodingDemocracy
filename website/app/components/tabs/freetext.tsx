@@ -37,6 +37,8 @@ export default function FreeText({ questionid }: { questionid: string }) {
     if (searchTerm === '') {
       setFilteredResponses(responses);
     } else {
+      // if searchTerm has question marks, it will confuse the request arguments so we remove them
+      var term = searchTerm.replace(/\?/g, '');
       const responsesData: any = await searchResponses(
         questionid,
         searchTerm,
@@ -55,7 +57,12 @@ export default function FreeText({ questionid }: { questionid: string }) {
         onChange={(e: any) => setSearchTerm(e.target.value)}
         onSearch={getSearchResults}
       />
-      <Responses responses={filteredResponses} />
+      {filteredResponses?.length > 0 && (
+        <Responses responses={filteredResponses} />
+      )}
+      {filteredResponses?.length === 0 && (
+        <div className="text-center text-gray-500">No responses found</div>
+      )}
       <div className="flex justify-center items-center w-full gap-4">
         <Button onClick={() => setOffset(Math.max(offset - limit, 0))}>
           Previous

@@ -52,6 +52,10 @@ export const getSentiment = async (questionid) => {
   return await getRequest(`/api/responses/sentiment/${questionid}`);
 };
 
+export const getAverageSentiment = async (topicid) => {
+  return await getRequest(`/api/topics/averagesentiment/${topicid}`);
+};
+
 export const getTopics = async (questionid) => {
   return await getRequest(`/api/topics/${questionid}`);
 };

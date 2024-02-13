@@ -17,6 +17,7 @@ export default function SimilarResponses({
   const [limit, setLimit] = useState(20);
   const [filteredResponses, setFilteredResponses] = useState<IResponse[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -28,12 +29,16 @@ export default function SimilarResponses({
   const getSearchResults = async (reset = false) => {
     const newOffset = reset ? 0 : offset;
     if (searchTerm.trim().length > 0) {
+      setLoading(true);
+      // if searchTerm has question marks, it will confuse the request arguments so we remove them
+      var term = searchTerm.replace(/\?/g, '');
       const responsesData: any = await searchSimilarResponses(
         questionid,
-        searchTerm,
+        term,
         newOffset,
         limit
       );
+      setLoading(false);
       setFilteredResponses(responsesData);
     }
   };
@@ -46,9 +51,16 @@ export default function SimilarResponses({
         onChange={(e: any) => setSearchTerm(e.target.value)}
         onSearch={() => getSearchResults(true)}
       />
+      {loading && <div className="text-center text-gray-500">Loading...</div>}
       {filteredResponses?.length > 0 && (
         <Responses responses={filteredResponses} />
       )}
+      {filteredResponses?.length === 0 && !loading && (
+        <div className="text-center text-gray-500">
+          No similar responses found
+        </div>
+      )}
+
       <div className="flex justify-center items-center w-full gap-4">
         <Button onClick={() => setOffset(Math.max(offset - limit, 0))}>
           Previous

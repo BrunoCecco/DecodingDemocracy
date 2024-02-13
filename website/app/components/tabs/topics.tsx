@@ -9,6 +9,7 @@ import {
   getTopics,
   getTopWords,
   getNumWordsForTopic,
+  getAverageSentiment,
 } from '@/app/api';
 import CommonTopics from '@/app/components/commontopics';
 import Dropdown from '@/app/components/dropdown';
@@ -97,14 +98,14 @@ export default function Page({ questionid }: { questionid: string }) {
     setFilteredResponses(responsesData);
     console.log(topic);
     const numWordsData: any = await getNumWordsForTopic(topic);
-    console.log(numWordsData);
     const topWordsData: any = await getTopWords(topic, wordsLimit);
+    const averageSentimentData: any = await getAverageSentiment(topic);
     setSelectedTopics([
       {
         0: topic,
         1: topWordsData,
-        2: 0,
-        3: numWordsData,
+        2: averageSentimentData.average_sentiment,
+        3: numWordsData.topic_count,
       },
     ]);
   };

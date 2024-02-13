@@ -7,6 +7,7 @@ import {
   Tooltip,
 } from 'chart.js';
 import { Bar } from 'react-chartjs-2';
+import { useEffect } from 'react';
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip);
 
@@ -50,11 +51,11 @@ const options = {
 
 const MultipleChoiceDistribution = ({ data }: { data: IOption[] }) => {
   const chartData = {
-    labels: data.map((option) => option.response),
+    labels: data?.map((option) => option.response),
     datasets: [
       {
         label: 'MMultiple Choice Distribution',
-        data: data.map((option) => option.response_count),
+        data: data?.map((option) => option.response_count),
         backgroundColor: ['rgba(75, 192, 192, 0.2)', 'rgba(255, 99, 132, 0.2)'],
         borderColor: ['rgba(75, 192, 192, 1)', 'rgba(255, 99, 132, 1)'],
         borderWidth: 1,

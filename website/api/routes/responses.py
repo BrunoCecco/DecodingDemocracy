@@ -56,14 +56,19 @@ def sentiment_distribution(question_id):
 @bp.route('/multiplechoice/<string:question_id>', methods=['GET'])
 def multiple_choice(question_id):    
     conn = get_db_connection()
-    c = conn.cursor()
+    c = conn.cursor()        
     c.execute('''SELECT response, COUNT(response) as response_count
                 FROM Response
-                WHERE question_id = ? AND COUNT(response) > 0
+                WHERE question_id = ? AND response IS NOT NULL
                 GROUP BY response
                 ORDER BY response_count DESC
                 ''', (question_id,))
-    multiple_choice = c.fetchall()    
+    multiple_choice = c.fetchall()       
+    # get number of null responses
+    c.execute('''SELECT COUNT(*) as count FROM Response WHERE question_id = ? AND response IS NULL''' , (question_id,))
+    null_responders = c.fetchall()    
+    noresponse_dict = {'response': 'No Response', 'response_count': null_responders[0]['count']}
+    multiple_choice.append(noresponse_dict)
     conn.close()    
     return jsonify(multiple_choice)
 
@@ -72,8 +77,8 @@ def multiple_choice(question_id):
 def similar_responses(question_id, text):
     conn = get_db_connection()
     c = conn.cursor()
-    offset = int(request.args.get('offset'))
-    limit = int(request.args.get('limit'))
+    offset = int(request.args.get('offset')) if request.args.get('offset') else 0
+    limit = int(request.args.get('limit')) if request.args.get('limit') else 10
     c.execute('''
         SELECT response_embeddings as embeddings FROM Question
         WHERE id = ?''', (question_id,))
@@ -99,7 +104,7 @@ def similar_responses(question_id, text):
 
     responses = []
     for index, row in result_df.iterrows():
-        if row["score"]>=0.8:
+        if row["score"]>=0.7:
             response_id = int(row['id']) + int(first_resp_id['id'])            
             c.execute('SELECT * FROM Response WHERE id = ?', (response_id,))
             resp = c.fetchone()
