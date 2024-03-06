@@ -17,8 +17,9 @@ export const getResponses = async (questionid, offset, limit) => {
 };
 
 export const searchResponses = async (questionid, term, offset, limit) => {
+  const encodedSearchTerm = encodeURIComponent(term);
   return await getRequest(
-    `/api/responses/search/${questionid}/${term}?offset=${offset}&limit=${limit}`
+    `/api/responses/search/${questionid}/${encodedSearchTerm}?offset=${offset}&limit=${limit}`
   );
 };
 
@@ -28,8 +29,9 @@ export const searchSimilarResponses = async (
   offset,
   limit
 ) => {
+  const encodedSearchTerm = encodeURIComponent(text);
   return await getRequest(
-    `/api/responses/similar/${questionid}/${text}?offset=${offset}&limit=${limit}`
+    `/api/responses/similar/${questionid}/${encodedSearchTerm}?offset=${offset}&limit=${limit}`
   );
 };
 
