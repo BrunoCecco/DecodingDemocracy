@@ -54,6 +54,9 @@ export default function Page({
         setSelectedTab(-1);
         const mcData: any = await getMultipleChoice(params.questionid);
         setMultipleChoiceData(mcData);
+      } else {
+        setIsMultipleChoice(false);
+        setSelectedTab(0);
       }
       setRendered(true);
     };
