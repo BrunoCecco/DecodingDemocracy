@@ -14,19 +14,20 @@ This project involves analyising public consultation responses in participatory 
 
 The following section will outline the steps required to reproduce the project, including how to make the database, how to import the data into the database, how to connect to the google colab notebook and how to run the web application.
 
-1. Create a folder called `DecodingDemocracy/` in your google drive to store everything related to this project.
+1. Create a folder called `DecodingDemocracy/` in google drive to store everything related to this project.
 2. Copy the [excel](./excel) directory with the 3 consultation files into the folder `DecodingDemocracy/`.
 3. Copy the [requirements.txt](./requirements.txt) file into the folder `DecodingDemocracy/`.
 4. Create a folder called `csv/` under `DecodingDemocracy/`.
-5. Copy the notebook [notebook.ipynb](./notebook.ipynb) into a Google Colab notebook under the `DecodingDemocracy/` folder.
-6. Run the first 3 cells in the notebook to create and populate the database called `db.sqlite` with the consultations data. Check these were created successfully.
+5. Copy the csv file [sample_sentiment_values.csv](./sample_sentiment_values.csv) into the `DecodingDemocracy/` folder.
+6. Copy the notebook [notebook.ipynb](./notebook.ipynb) into a Google Colab notebook under the `DecodingDemocracy/` folder.
+7. Run the first 3 cells in the notebook to create and populate the database called `db.sqlite` with the consultations data. Check these were created successfully.
 
 ## Instructions to run the web dashboard
 
 1. Clone this repository to your local machine (`git clone https://github.com/BrunoCecco/DecodingDemocracy.git`).
 2. `cd website`
-3. Add a .env file with the line 'DB_PATH=db.sqlite'
-4. Download the database file as db.sqlite and add the file to `api`
+3. Add a .env file under `/website` with the line 'DB_PATH=db.sqlite'
+4. Download the database file as db.sqlite and add the file to `/api`
 5. `npm install`
 6. `npm run dev`
 8. Navigate to https://localhost:3000
