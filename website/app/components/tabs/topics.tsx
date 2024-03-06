@@ -9,10 +9,12 @@ import {
   getTopics,
   getTopWords,
   getNumWordsForTopic,
-  getAverageSentiment,
+  getSentiment,
+  getSentimentForTopic,
 } from '@/app/api';
 import CommonTopics from '@/app/components/commontopics';
 import Dropdown from '@/app/components/dropdown';
+import SentimentDistribution from '@/app/components/sentimentdistribution';
 import Responses from '@/app/components/responses';
 import React from 'react';
 import { IResponse } from '@/app/api/interfaces';
@@ -21,8 +23,7 @@ import { useLocalStorage } from 'usehooks-ts';
 interface ITopic {
   0: string; // id
   1: any; // chart data
-  2: number; // sentiment value
-  3: number; // number of responses
+  2: number; // number of responses
 }
 
 interface IOption {
@@ -38,6 +39,8 @@ export default function Page({ questionid }: { questionid: string }) {
   const [wordsLimit, setWordsLimit] = useState(10);
   const [filteredResponses, setFilteredResponses] = useState<IResponse[]>([]);
   const [topics, setTopics] = useState<IOption[]>([]);
+  const [positiveSentiment, setPositiveSentiment] = useState(0);
+  const [negativeSentiment, setNegativeSentiment] = useState(0);
   const [selectedTopic, setSelectedTopic] = useLocalStorage('selectedTopic', {
     label: 'Select a topic',
     value: '',
@@ -45,10 +48,18 @@ export default function Page({ questionid }: { questionid: string }) {
   const [rendered, setRendered] = useState(false);
 
   useEffect(() => {
+    setSelectedTopic({ label: 'Select a topic', value: '' });
+  }, [questionid]);
+
+  useEffect(() => {
     window.scrollTo(0, 0);
     const fetchData = async () => {
+      var sentimentData: any;
       if (selectedTopic === null) {
         setSelectedTopic({ label: 'Select a topic', value: '' });
+        sentimentData = await getSentiment(questionid);
+        setPositiveSentiment(sentimentData?.positive);
+        setNegativeSentiment(sentimentData?.negative);
       }
       if (selectedTopic.value === '') {
         const responsesData: any = await getResponses(
@@ -57,6 +68,9 @@ export default function Page({ questionid }: { questionid: string }) {
           limit
         );
         setFilteredResponses(responsesData);
+        sentimentData = await getSentiment(questionid);
+        setPositiveSentiment(sentimentData?.positive);
+        setNegativeSentiment(sentimentData?.negative);
       } else {
         const responsesData: any = await searchResponseTopics(
           questionid,
@@ -95,17 +109,18 @@ export default function Page({ questionid }: { questionid: string }) {
       offset,
       limit
     );
+    const topicSentiment: any = await getSentimentForTopic(topic);
+    setPositiveSentiment(topicSentiment.positive);
+    setNegativeSentiment(topicSentiment.negative);
     setFilteredResponses(responsesData);
-    console.log(topic);
     const numWordsData: any = await getNumWordsForTopic(topic);
     const topWordsData: any = await getTopWords(topic, wordsLimit);
-    const averageSentimentData: any = await getAverageSentiment(topic);
+    const sentimentData: any = await getSentimentForTopic(topic);
     setSelectedTopics([
       {
         0: topic,
         1: topWordsData,
-        2: averageSentimentData.average_sentiment,
-        3: numWordsData.topic_count,
+        2: numWordsData.topic_count,
       },
     ]);
   };
@@ -120,7 +135,25 @@ export default function Page({ questionid }: { questionid: string }) {
             onOptionClick={filterTopics}
           />
         )}
-        {selectedTopics?.length > 0 && <CommonTopics topics={selectedTopics} />}
+        {selectedTopics?.length > 0 && (
+          <CommonTopics
+            topics={selectedTopics}
+            title={
+              selectedTopic.value == ''
+                ? 'Most Common Topics'
+                : 'Topic ' + selectedTopic.value + ' Words'
+            }
+          />
+        )}
+        <SentimentDistribution
+          positive={positiveSentiment}
+          negative={negativeSentiment}
+          title={
+            selectedTopic.value == ''
+              ? 'Overall Sentiment Distribution'
+              : 'Topic ' + selectedTopic.value + ' Sentiment Distribution'
+          }
+        />
         <Responses responses={filteredResponses} />
         <div className="flex justify-center items-center w-full gap-4">
           <Button onClick={() => setOffset(Math.max(offset - limit, 0))}>

@@ -46,9 +46,11 @@ const options = {
 const SentimentDistribution = ({
   positive,
   negative,
+  title,
 }: {
   positive: number;
   negative: number;
+  title?: string;
 }) => {
   const data = {
     labels: ['Positive', 'Negative'],
@@ -64,7 +66,7 @@ const SentimentDistribution = ({
   };
   return (
     <div className="my-8 flex flex-col items-center justify-center">
-      <h2>Sentiment Distribution</h2>
+      <h2>{title}</h2>
       <div className="flex items-center flex-wrap w-[50vw] h-[35vw] justify-center gap-4 mt-8 bg-white shadow-lg rounded-md p-4">
         <Bar data={data} options={options} />
       </div>

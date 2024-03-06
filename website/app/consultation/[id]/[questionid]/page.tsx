@@ -7,7 +7,6 @@ import React from 'react';
 import FreeText from '@/app/components/tabs/freetext';
 import SimilarResponses from '@/app/components/tabs/similarresponses';
 import Topics from '@/app/components/tabs/topics';
-import Sentiment from '@/app/components/tabs/sentiment';
 import { useLocalStorage } from 'usehooks-ts';
 
 const Tabs = ({ children }: any) => {
@@ -82,25 +81,20 @@ export default function Page({
               />
               <Tab
                 index={2}
-                title="Topics"
-                selected={selectedTab}
-                setSelectedTab={setSelectedTab}
-              />
-              <Tab
-                index={3}
-                title="Sentiment"
+                title="Topics and Sentiment"
                 selected={selectedTab}
                 setSelectedTab={setSelectedTab}
               />
             </Tabs>
           </div>
         )}
-        {selectedTab === 0 && <FreeText questionid={params.questionid} />}
+        {(selectedTab === 0 || selectedTab == null) && (
+          <FreeText questionid={params.questionid} />
+        )}
         {selectedTab === 1 && (
           <SimilarResponses questionid={params.questionid} />
         )}
         {selectedTab === 2 && <Topics questionid={params.questionid} />}
-        {selectedTab === 3 && <Sentiment questionid={params.questionid} />}
         {isMultipleChoice && (
           <MultipleChoiceDistribution data={multipleChoiceData} />
         )}

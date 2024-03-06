@@ -30,12 +30,12 @@ def common_topics(question_id):
     conn = get_db_connection()
     c = conn.cursor()  
     limit = request.args.get('limit', type=int)  # Ensure 'limit' is an integer
-    c.execute('''SELECT T.topic_id, ROUND(AVG(R.sentiment_value),3) as average_sentiment, COUNT(R.topic_id) as topic_count
+    c.execute('''SELECT T.topic_id, COUNT(R.topic_id) as topic_count
                 FROM Topics T
                 JOIN Response R ON T.topic_id = R.topic_id
                 WHERE R.question_id = ?
                 GROUP BY T.topic_id
-                ORDER BY topic_count DESC, average_sentiment DESC
+                ORDER BY topic_count DESC
                 LIMIT ?                
                 ''', (question_id, limit))
     topics = c.fetchall()    
@@ -81,13 +81,15 @@ def num_responses(topic_id):
     conn.close()
     return jsonify(count)
 
-# get average sentiment for a given topic
-@bp.route('/averagesentiment/<string:topic_id>', methods=['GET'])
+# get sentiment distribution for a given topic
+@bp.route('/sentiment/<string:topic_id>', methods=['GET'])
 def average_sentiment(topic_id):
     conn = get_db_connection()
     c = conn.cursor()    
-    print(topic_id, 'topic_od')
-    c.execute('SELECT ROUND(AVG(sentiment_value),3) as average_sentiment FROM Response WHERE topic_id = ?', (topic_id,))
-    average_sentiment = c.fetchone()
+    c.execute('''SELECT SUM(CASE WHEN sentiment_value > 0 THEN sentiment_value ELSE 0 END) AS positive,
+            SUM(CASE WHEN sentiment_value < 0 THEN sentiment_value ELSE 0 END) AS negative
+            FROM Response
+            WHERE topic_id = ?''', (topic_id,))    
+    sentiment = c.fetchall()    
     conn.close()
-    return jsonify(average_sentiment)
+    return jsonify(sentiment[0])

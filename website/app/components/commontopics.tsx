@@ -13,8 +13,7 @@ ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip);
 interface ITopic {
   0: string; // id
   1: any; // chart data
-  2: number; // sentiment value
-  3: number; // number of responses
+  2: number; // number of responses
 }
 
 const options = {
@@ -50,23 +49,28 @@ const options = {
   },
 };
 
-const CommonTopics = ({ topics }: { topics: ITopic[] }) => {
+const CommonTopics = ({
+  topics,
+  title,
+}: {
+  topics: ITopic[];
+  title?: string;
+}) => {
   console.log(topics);
   return (
     <div className="mt-8 flex flex-col items-center">
-      <h2>Most Common Topics</h2>
+      <h2>{title}</h2>
       <div className="flex items-center flex-wrap justify-center gap-4 mt-8 bg-white shadow-lg rounded-md p-4">
         {topics.map((topic: ITopic, i: number) => {
           return (
             <div
               key={i}
-              className="h-[300px] w-[400px] text-center flex flex-col items-center"
+              className="w-[35vw] h-[25vw] text-center flex flex-col items-center"
             >
               <div>
-                Topic {topic[0]?.split('-')[2]} ({topic[3]} responses)
+                Topic {topic[0]?.split('-')[2]} ({topic[2]} responses)
               </div>
               <Bar data={topic[1]} options={options} />
-              <div>Average sentiment: {topic[2]}</div>
             </div>
           );
         })}
