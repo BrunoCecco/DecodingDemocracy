@@ -1,15 +1,12 @@
 from flask import Blueprint, jsonify, request
 from db import get_db_connection
-import matplotlib
-matplotlib.use('Agg')  # Use Agg backend for plotting (non-interactive)
+from functools import lru_cache # to cache the results of the functions
 
-import matplotlib.pyplot as plt
-import io
-import base64
 bp = Blueprint('topics', __name__, url_prefix='/api/topics')
 
 # get topics for a given question (topic_id)
 @bp.route('/<string:question_id>', methods=['GET'])
+@lru_cache(maxsize=32)
 def topics(question_id):    
     conn = get_db_connection()
     c = conn.cursor()      
@@ -26,6 +23,7 @@ def topics(question_id):
 
 # get most common topics for a given question
 @bp.route('/common/<string:question_id>', methods=['GET'])
+@lru_cache(maxsize=32)
 def common_topics(question_id):    
     conn = get_db_connection()
     c = conn.cursor()  
@@ -45,6 +43,7 @@ def common_topics(question_id):
 
 # get most common words and their scores in a topic
 @bp.route('/topwords/<string:topic_id>', methods=['GET'])
+@lru_cache(maxsize=32)
 def top_words(topic_id):    
     conn = get_db_connection()
     c = conn.cursor()  
@@ -61,6 +60,7 @@ def top_words(topic_id):
 
 # search for responses within a given topic
 @bp.route('/search/<string:question_id>/<string:topic_id>', methods=['GET'])
+@lru_cache(maxsize=32)
 def search_responses(question_id, topic_id):
     conn = get_db_connection()
     c = conn.cursor()
@@ -73,6 +73,7 @@ def search_responses(question_id, topic_id):
 
 # get number of responses for a given topic
 @bp.route('/numresponses/<string:topic_id>', methods=['GET'])
+@lru_cache(maxsize=32)
 def num_responses(topic_id):
     conn = get_db_connection()
     c = conn.cursor()    
@@ -84,6 +85,7 @@ def num_responses(topic_id):
 
 # get sentiment distribution for a given topic
 @bp.route('/sentiment/<string:topic_id>', methods=['GET'])
+@lru_cache(maxsize=32)
 def average_sentiment(topic_id):
     conn = get_db_connection()
     c = conn.cursor()    

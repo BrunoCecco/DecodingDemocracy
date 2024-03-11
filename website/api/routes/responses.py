@@ -3,12 +3,14 @@ from db import get_db_connection
 from routes.utils import semantic_similarity_text, pre_process, stopwords
 import numpy as np
 from sentence_transformers import SentenceTransformer
+from functools import lru_cache # to cache the results of the functions
 
 bp = Blueprint('responses', __name__, url_prefix='/api/responses')
 model = SentenceTransformer('all-MiniLM-L6-v2') # Load pre-trained sentence transformer model
 
 # get all responses for a given responder
 @bp.route('/<int:responder_id>', methods=['GET'])
+@lru_cache(maxsize=32)
 def responses(responder_id):
     conn = get_db_connection()
     c = conn.cursor()    
@@ -19,6 +21,7 @@ def responses(responder_id):
 
 # get all responses for a given question, with offset and limit
 @bp.route('/<string:question_id>', methods=['GET'])
+@lru_cache(maxsize=32)
 def response(question_id):    
     conn = get_db_connection()
     c = conn.cursor()    
@@ -31,6 +34,7 @@ def response(question_id):
 
 # search for responses containing a specific term
 @bp.route('/search/<string:question_id>/<string:search_term>', methods=['GET'])
+@lru_cache(maxsize=32)
 def search_responses(question_id, search_term):
     conn = get_db_connection()
     c = conn.cursor()
@@ -43,6 +47,7 @@ def search_responses(question_id, search_term):
 
 # get overall sentiment distribution for a given question
 @bp.route('/sentiment/<string:question_id>', methods=['GET'])
+@lru_cache(maxsize=32)
 def sentiment_distribution(question_id):    
     conn = get_db_connection()
     c = conn.cursor()
@@ -56,6 +61,7 @@ def sentiment_distribution(question_id):
 
 # get multiplce choice options and their counts for a given question
 @bp.route('/multiplechoice/<string:question_id>', methods=['GET'])
+@lru_cache(maxsize=32)
 def multiple_choice(question_id):    
     conn = get_db_connection()
     c = conn.cursor()        
@@ -81,6 +87,7 @@ Retrieve similar responses to a given question based on the text input, using co
 @return A JSON response containing similar responses along with their similarity scores.
 """
 @bp.route('/similar/<string:question_id>/<string:text>', methods=['GET'])
+@lru_cache(maxsize=32)
 def similar_responses(question_id, text):
     conn = get_db_connection()
     c = conn.cursor()

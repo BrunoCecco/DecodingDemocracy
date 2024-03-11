@@ -66,7 +66,7 @@ export default function Page({
   return rendered ? (
     <main className="flex min-h-screen flex-col items-center justify-between p-24">
       <div className="w-full flex flex-col items-center justify-between gap-8 pt-8 overflow-auto relative">
-        <div className="font-bold text-lg">{question}</div>
+        <div className="font-bold text-lg">Question: {question}</div>
         {!isMultipleChoice && (
           <div className="flex w-full flex-col">
             <Tabs>

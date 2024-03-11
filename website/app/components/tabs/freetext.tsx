@@ -52,7 +52,7 @@ export default function FreeText({ questionid }: { questionid: string }) {
   return (
     <div className="flex w-full flex-col gap-4 items-center justify-center">
       <SearchBar
-        placeholder="Search responses..."
+        placeholder="Enter a search term to find exact matches within responses..."
         value={searchTerm}
         onChange={(e: any) => setSearchTerm(e.target.value)}
         onSearch={getSearchResults}

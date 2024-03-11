@@ -1,5 +1,6 @@
 from flask import Blueprint, jsonify
 from db import get_db_connection
+from functools import lru_cache # to cache the results of the functions
 
 bp = Blueprint('responders', __name__, url_prefix='/api/responders')
 
@@ -10,7 +11,8 @@ Define routes for retrieving all responders and a specific responder by ID.
 """
 
 # get all responders   
-@bp.route('/', methods=['GET'])    
+@bp.route('/', methods=['GET'])   
+@lru_cache(maxsize=32) 
 def responders():
     conn = get_db_connection()
     c = conn.cursor()    
@@ -21,6 +23,7 @@ def responders():
 
 # get a specific responder based on its ID
 @bp.route('/<int:responder_id>', methods=['GET'])
+@lru_cache(maxsize=32)
 def responder(responder_id):
     conn = get_db_connection()
     c = conn.cursor()    

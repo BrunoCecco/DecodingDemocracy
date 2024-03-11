@@ -46,7 +46,7 @@ export default function SimilarResponses({
   return (
     <div className="flex w-full flex-col gap-4 items-center justify-center">
       <SearchBar
-        placeholder="Search responses..."
+        placeholder="Enter a search term to find similar responses..."
         value={searchTerm}
         onChange={(e: any) => setSearchTerm(e.target.value)}
         onSearch={() => getSearchResults(true)}

@@ -53,7 +53,7 @@ const Dropdown: React.FC<DropdownProps> = ({
             <div
               key={option.label}
               onClick={() => clickOption(option)}
-              className="px-4 py-2 cursor-pointer hover:bg-blue-100"
+              className="px-4 py-2 cursor-pointer hover:bg-blue-100 w-full"
             >
               {option.label}
             </div>
