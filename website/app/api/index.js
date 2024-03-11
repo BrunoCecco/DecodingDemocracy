@@ -1,5 +1,8 @@
+// File handles all API requests to the server
+
 const URL = 'http://localhost:3000';
 
+// Function to make a GET request to the server
 export const getRequest = async (url) => {
   try {
     const response = await fetch(`${URL}${url}`);
@@ -10,12 +13,14 @@ export const getRequest = async (url) => {
   }
 };
 
+// '/api/responses/:questionid?offset=0&limit=10' - get responses for a question
 export const getResponses = async (questionid, offset, limit) => {
   return await getRequest(
     `/api/responses/${questionid}?offset=${offset}&limit=${limit}`
   );
 };
 
+// '/api/responses/search/:questionid/:term?offset=0&limit=10' - search responses for a question
 export const searchResponses = async (questionid, term, offset, limit) => {
   const encodedSearchTerm = encodeURIComponent(term);
   return await getRequest(
@@ -23,6 +28,7 @@ export const searchResponses = async (questionid, term, offset, limit) => {
   );
 };
 
+// '/api/responses/similar/:questionid/:term?offset=0&limit=10' - search similar responses for a question
 export const searchSimilarResponses = async (
   questionid,
   text,
@@ -35,6 +41,7 @@ export const searchSimilarResponses = async (
   );
 };
 
+// '/api/topics/search/:questionid/:topic?offset=0&limit=10' - search responses for a given topic
 export const searchResponseTopics = async (
   questionid,
   topic,
@@ -46,22 +53,27 @@ export const searchResponseTopics = async (
   );
 };
 
+// '/api/questions/:questionid' - get question details
 export const getQuestion = async (questionid) => {
   return await getRequest(`/api/questions/${questionid}`);
 };
 
+// '/api/responses/sentiment/:questionid' - get overall sentiment for a question
 export const getSentiment = async (questionid) => {
   return await getRequest(`/api/responses/sentiment/${questionid}`);
 };
 
+// '/api/topics/sentiment/:topicid' - get sentiment for a topic
 export const getSentimentForTopic = async (topicid) => {
   return await getRequest(`/api/topics/sentiment/${topicid}`);
 };
 
+// '/api/topics/:questionid' - get topics for a question
 export const getTopics = async (questionid) => {
   return await getRequest(`/api/topics/${questionid}`);
 };
 
+// '/api/topics/topwords/:topicid?limit=10' - get top words for a topic
 export const getTopWords = async (topic, limit) => {
   const data = await getRequest(`/api/topics/topwords/${topic}?limit=${limit}`);
   const chart_data = {
@@ -75,13 +87,15 @@ export const getTopWords = async (topic, limit) => {
       },
     ],
   };
-  return chart_data;
+  return chart_data; // return chart data
 };
 
+// '/api/topics/numresponses/:topic' - get number of responses for a topic
 export const getNumWordsForTopic = async (topic) => {
   return await getRequest(`/api/topics/numresponses/${topic}`);
 };
 
+// '/api/topics/common/:questionid?limit=10' - get common topics for a question
 export const getCommonTopics = async (questionid, topicsLimit, wordsLimit) => {
   const topics = await getRequest(
     `/api/topics/common/${questionid}?limit=${topicsLimit}`
@@ -103,6 +117,7 @@ export const getCommonTopics = async (questionid, topicsLimit, wordsLimit) => {
         },
       ],
     };
+    // return topic data, including chart data for top words
     return [
       topic.topic_id,
       chart_data,
@@ -115,10 +130,12 @@ export const getCommonTopics = async (questionid, topicsLimit, wordsLimit) => {
   return topicsWithWords;
 };
 
+// '/api/responses/multiplechoice/:questionid' - get multiple choice responses for a question
 export const getMultipleChoice = async (questionid) => {
   return await getRequest(`/api/responses/multiplechoice/${questionid}`);
 };
 
+// '/api/questions/wordcloud/:questionid' - get wordcloud for a question
 export const getWordcloud = async (questionid) => {
   return await getRequest(`/api/questions/wordcloud/${questionid}`);
 };

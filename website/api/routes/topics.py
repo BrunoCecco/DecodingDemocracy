@@ -24,7 +24,7 @@ def topics(question_id):
     conn.close()
     return jsonify(topics)
 
-# get most common topics and average sentiment for each topic for a given question (topic_id)
+# get most common topics for a given question
 @bp.route('/common/<string:question_id>', methods=['GET'])
 def common_topics(question_id):    
     conn = get_db_connection()
@@ -59,6 +59,7 @@ def top_words(topic_id):
     conn.close()
     return jsonify(top_words)
 
+# search for responses within a given topic
 @bp.route('/search/<string:question_id>/<string:topic_id>', methods=['GET'])
 def search_responses(question_id, topic_id):
     conn = get_db_connection()

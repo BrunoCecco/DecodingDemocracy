@@ -47,12 +47,15 @@ def pre_process(text, stops=None):
     text = [lemmatizer.lemmatize(token) for token in text]
     return text
 
+# Semantic similarity between search text and other responses within a question
 def semantic_similarity_text(text_embedding, q_embeddings):
-    similarity_text = cosine_similarity([text_embedding], q_embeddings)
-    similarities_text_sorted = similarity_text.argsort()
+    # Get the similarity scores for the input text and each response
+    similarity_text = cosine_similarity([text_embedding], q_embeddings) 
+    similarities_text_sorted = similarity_text.argsort() # Sort the similarity scores
     score = []
     ids = []
 
+    # build a dataframe with the sorted similarity scores
     for i in range(-1, -(len(similarity_text[0])), -1):
         similar_index = similarities_text_sorted[0][i]
         rank = similarity_text[0][similar_index]

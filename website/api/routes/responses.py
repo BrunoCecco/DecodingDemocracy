@@ -5,8 +5,9 @@ import numpy as np
 from sentence_transformers import SentenceTransformer
 
 bp = Blueprint('responses', __name__, url_prefix='/api/responses')
-model = SentenceTransformer('all-MiniLM-L6-v2')
+model = SentenceTransformer('all-MiniLM-L6-v2') # Load pre-trained sentence transformer model
 
+# get all responses for a given responder
 @bp.route('/<int:responder_id>', methods=['GET'])
 def responses(responder_id):
     conn = get_db_connection()
@@ -16,7 +17,7 @@ def responses(responder_id):
     conn.close()
     return jsonify(responses)
 
-# /api/responses/{question_id}?offset=0&limit=10
+# get all responses for a given question, with offset and limit
 @bp.route('/<string:question_id>', methods=['GET'])
 def response(question_id):    
     conn = get_db_connection()
@@ -28,6 +29,7 @@ def response(question_id):
     conn.close()
     return jsonify(response)
 
+# search for responses containing a specific term
 @bp.route('/search/<string:question_id>/<string:search_term>', methods=['GET'])
 def search_responses(question_id, search_term):
     conn = get_db_connection()
@@ -72,7 +74,12 @@ def multiple_choice(question_id):
     conn.close()    
     return jsonify(multiple_choice)
 
-# get most similar response by using cosine similarity
+"""
+Retrieve similar responses to a given question based on the text input, using cosine similarity.
+@param question_id - The ID of the question for which we want to find similar responses.
+@param text - The text input for which we want to find similar responses.
+@return A JSON response containing similar responses along with their similarity scores.
+"""
 @bp.route('/similar/<string:question_id>/<string:text>', methods=['GET'])
 def similar_responses(question_id, text):
     conn = get_db_connection()
@@ -82,34 +89,34 @@ def similar_responses(question_id, text):
     c.execute('''
         SELECT response_embeddings as embeddings FROM Question
         WHERE id = ?''', (question_id,))
-    res = c.fetchone()    
-    # Convert embedding to numpy array
+    res = c.fetchone() # response embeddings are stored as a blob in the database
+    # Convert embeddings to numpy array so we can use them for similarity comparison
     response_embeddings = np.frombuffer(res['embeddings'], dtype=np.float32)
 
     c.execute('''
         SELECT MIN(id) as id FROM Response
         WHERE question_id = ?''', (question_id,))
-    first_resp_id = c.fetchone()    
+    first_resp_id = c.fetchone() # get the first response ID for the question to use as an offset
     
-    preprocessed = " ".join(pre_process(text,stopwords))
-    emb = model.encode(preprocessed, convert_to_tensor=True)
+    preprocessed = " ".join(pre_process(text,stopwords)) # Preprocess the input text
+    emb = model.encode(preprocessed, convert_to_tensor=True) # Get the embeddings for the input text
     emb = emb.cpu().numpy()
 
-    # Reshape array of all response embeddings
+    # Reshape array of all response embeddings so we can compare the input text to each response
     items_per_subarray = emb.shape[0]
     num_subarrays = len(response_embeddings) // items_per_subarray
     reshaped_embeddings = response_embeddings[:num_subarrays * items_per_subarray].reshape((num_subarrays, items_per_subarray))
 
-    result_df = semantic_similarity_text(emb, reshaped_embeddings)
+    result_df = semantic_similarity_text(emb, reshaped_embeddings) # Get the similarity scores for the input text and each response
 
     responses = []    
-    for index, row in result_df.iterrows():
+    for index, row in result_df.iterrows(): # Convert the similarity scores to a list of dictionaries
         responses.append({'id': int(row['id']) + int(first_resp_id['id']), 'similarity_score': row['score']})
     
     ret = []
-    for i in range(offset, offset+limit):            
-        response_id = responses[i]['id']
-        c.execute('SELECT * FROM Response WHERE id = ?', (response_id,))
+    for i in range(offset, offset+limit): # only return the responses within the offset and limit          
+        response_id = responses[i]['id'] # Get the response ID for each response
+        c.execute('SELECT * FROM Response WHERE id = ?', (response_id,)) # Get the full response from db using the response ID
         resp = c.fetchone()
         resp_object = {'similarity_score': responses[i]['similarity_score']}
         for key in resp.keys():

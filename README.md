@@ -30,13 +30,7 @@ The following section will outline the steps required to reproduce the project, 
 4. Download the database file as db.sqlite and add the file to `/api`
 5. `npm install`
 6. `npm run dev`
-8. Navigate to https://localhost:3000
-
-### Database Design (Old)
-
-Here is an ER Model of the database used to store the data on consultations and responses. The database was created using SQLite since Python is the main language used.
-
-![ER Model](./ERModel.png)
+7. Navigate to https://localhost:3000
 
 ### Colab notebooks
 

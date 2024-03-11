@@ -1,3 +1,4 @@
+// Interface for the response object
 export interface IResponse {
   id: number;
   question_id: string;
