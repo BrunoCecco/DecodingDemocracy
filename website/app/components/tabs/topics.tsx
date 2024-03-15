@@ -95,6 +95,7 @@ export default function Page({ questionid }: { questionid: string }) {
         topicsLimit,
         wordsLimit
       );
+      console.log(commonTopicsData);
       setSelectedTopics(commonTopicsData);
       setRendered(true);
     };

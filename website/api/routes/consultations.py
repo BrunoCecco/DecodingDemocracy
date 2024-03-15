@@ -4,7 +4,6 @@ from functools import lru_cache # to cache the results of the functions
 
 bp = Blueprint('consultations', __name__, url_prefix='/api/consultations')
 
-
 """
 Define routes for retrieving consultations from the database.
 - For the route '/', retrieve all consultations from the database.
@@ -24,7 +23,7 @@ def consultations():
 
 # get a specific consultation based on its ID
 @bp.route('/<int:consultation_id>', methods=['GET'])
-@lru_cache(maxsize=32) # cache the results of the function
+@lru_cache(maxsize=32)
 def consultation(consultation_id):
     conn = get_db_connection()
     c = conn.cursor()    
