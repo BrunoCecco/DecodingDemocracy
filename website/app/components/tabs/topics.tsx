@@ -47,8 +47,10 @@ export default function Page({ questionid }: { questionid: string }) {
   });
   const [rendered, setRendered] = useState(false);
 
+  const defaultTopic = { label: 'Select a topic', value: '' };
+
   useEffect(() => {
-    setSelectedTopic({ label: 'Select a topic', value: '' });
+    setSelectedTopic(defaultTopic);
   }, [questionid]);
 
   useEffect(() => {
@@ -56,7 +58,7 @@ export default function Page({ questionid }: { questionid: string }) {
     const fetchData = async () => {
       var sentimentData: any;
       if (selectedTopic === null) {
-        setSelectedTopic({ label: 'Select a topic', value: '' });
+        setSelectedTopic(defaultTopic);
         sentimentData = await getSentiment(questionid);
         setPositiveSentiment(sentimentData?.positive);
         setNegativeSentiment(sentimentData?.negative);
@@ -83,19 +85,24 @@ export default function Page({ questionid }: { questionid: string }) {
 
       const topicsData: any = await getTopics(questionid);
       setTopics(
-        topicsData.map((topic: any) => {
-          return {
-            label: topic.topic_id + ': ' + topic.topic_count + ' responses',
-            value: topic.topic_id,
-          };
-        })
+        [defaultTopic].concat(
+          topicsData.map((topic: any) => {
+            return {
+              label:
+                topic.topic_id.split('-')[2] +
+                ': ' +
+                topic.topic_count +
+                ' responses',
+              value: topic.topic_id,
+            };
+          })
+        )
       );
       const commonTopicsData: any = await getCommonTopics(
         questionid,
         topicsLimit,
         wordsLimit
       );
-      console.log(commonTopicsData);
       setSelectedTopics(commonTopicsData);
       setRendered(true);
     };
@@ -103,6 +110,16 @@ export default function Page({ questionid }: { questionid: string }) {
   }, [offset, limit]);
 
   const filterTopics = async (topic: string) => {
+    if (topic === defaultTopic.value) {
+      setSelectedTopic(defaultTopic);
+      const commonTopicsData: any = await getCommonTopics(
+        questionid,
+        topicsLimit,
+        wordsLimit
+      );
+      setSelectedTopics(commonTopicsData);
+      return;
+    }
     setSelectedTopic({ label: topic, value: topic });
     const responsesData: any = await searchResponseTopics(
       questionid,
