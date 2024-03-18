@@ -38,7 +38,7 @@ const Dropdown: React.FC<DropdownProps> = ({
   };
 
   return (
-    <div className="relative flex flex-col items-end w-[300px] text-center">
+    <div className="relative flex flex-col items-end w-[300px] text-center z-50">
       <button
         onClick={toggleDropdown}
         className="bg-white  py-2 px-4 flex items-center justify-center gap-4 w-full rounded focus:outline-none focus:ring focus:border-blue-300"

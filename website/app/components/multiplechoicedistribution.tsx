@@ -30,8 +30,6 @@ const options = {
   scales: {
     x: {
       ticks: {
-        maxRotation: 50,
-        minRotation: 30,
         padding: 10,
         autoSkip: false,
         fontSize: 10,
@@ -39,8 +37,6 @@ const options = {
     },
     y: {
       ticks: {
-        maxRotation: 50,
-        minRotation: 30,
         padding: 5,
         autoSkip: false,
         fontSize: 4,
@@ -50,8 +46,10 @@ const options = {
 };
 
 const MultipleChoiceDistribution = ({ data }: { data: IOption[] }) => {
+  const labels = data?.map((option) => option.response);
+
   const chartData = {
-    labels: data?.map((option) => option.response),
+    labels: data?.map((option, i) => i + 1),
     datasets: [
       {
         label: 'MMultiple Choice Distribution',
@@ -64,10 +62,18 @@ const MultipleChoiceDistribution = ({ data }: { data: IOption[] }) => {
   };
   return (
     <div className="my-8 flex flex-col items-center justify-center">
-      <h2>Multiple Choice Distribution</h2>
-      <div className="flex items-center flex-wrap w-[50vw] h-[35vw] justify-center gap-4 mt-8 bg-white shadow-lg rounded-md p-4">
+      <h2 className="text-center">Multiple Choice Distribution</h2>
+      <div className="flex items-center flex-wrap w-full h-[300px] sm:w-[50vw] sm:h-[35vw] justify-center gap-4 mt-8 bg-white shadow-lg rounded-md p-4">
         <Bar data={chartData} options={options} />
       </div>
+      {labels?.map((label, i) => (
+        <div
+          key={i}
+          className="px-4 py-2 cursor-pointer hover:bg-blue-100 w-full"
+        >
+          {i + 1}: {label}
+        </div>
+      ))}
     </div>
   );
 };

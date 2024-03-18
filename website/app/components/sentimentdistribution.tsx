@@ -66,8 +66,8 @@ const SentimentDistribution = ({
   };
   return (
     <div className="my-8 flex flex-col items-center justify-center">
-      <h2>{title}</h2>
-      <div className="flex items-center flex-wrap w-[50vw] h-[35vw] justify-center gap-4 mt-8 bg-white shadow-lg rounded-md p-4">
+      <h2 className="text-center">{title}</h2>
+      <div className="flex items-center flex-wrap w-full h-[300px] sm:w-[50vw] sm:h-[35vw] justify-center gap-4 mt-8 bg-white shadow-lg rounded-md p-4">
         <Bar data={data} options={options} />
       </div>
     </div>

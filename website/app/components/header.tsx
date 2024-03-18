@@ -37,7 +37,7 @@ const Header = () => {
   };
 
   return (
-    <header className="fixed top-0 p-8 w-full bg-transparent backdrop-blur z-50">
+    <header className="p-8 w-full bg-transparent backdrop-blur z-50">
       <div className="container mx-auto flex md:flex-row flex-col justify-between gap-4 items-center">
         {/* Logo/Title */}
         <div className="flex items-center">

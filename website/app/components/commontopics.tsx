@@ -65,9 +65,9 @@ const CommonTopics = ({
           return (
             <div
               key={i}
-              className="w-[33vw] h-[20vw] text-center flex flex-col items-center bg-white rounded-md p-4"
+              className="w-full h-auto sm:w-[33vw] sm:h-[20vw] text-center flex flex-col items-center bg-white rounded-md p-4"
             >
-              <div>
+              <div className="text-center">
                 Topic {topic[0]?.split('-')[2]} ({topic[2]} responses)
               </div>
               <Bar data={topic[1]} options={options} />

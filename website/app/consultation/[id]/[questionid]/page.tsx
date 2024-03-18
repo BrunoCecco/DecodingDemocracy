@@ -11,7 +11,7 @@ import { useLocalStorage } from 'usehooks-ts';
 
 const Tabs = ({ children }: any) => {
   return (
-    <div className="flex w-full gap-4 justify-around bg-gray-700 p-2 rounded-md">
+    <div className="flex sm:flex-row flex-col w-full gap-4 justify-around bg-gray-700 p-2 rounded-md">
       {children}
     </div>
   );
@@ -20,7 +20,7 @@ const Tabs = ({ children }: any) => {
 const Tab = ({ index, title, selected, setSelectedTab }: any) => {
   return (
     <div
-      className={`cursor-pointer w-full text-center py-2 px-4 rounded-md ${
+      className={`cursor-pointer w-full text-center text-xs sm:text-lg py-2 px-4 rounded-md ${
         selected === index
           ? 'bg-white !text-black'
           : 'text-white hover:bg-gray-600'
@@ -64,7 +64,7 @@ export default function Page({
   }, []);
 
   return rendered ? (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24">
+    <main className="flex min-h-screen flex-col items-center justify-between p-4 sm:p-24">
       <div className="w-full flex flex-col items-center justify-between gap-8 pt-8 overflow-auto relative">
         <div className="font-bold text-lg">Question: {question}</div>
         {!isMultipleChoice && (

@@ -44,7 +44,7 @@ export default function SimilarResponses({
   };
 
   return (
-    <div className="flex w-full flex-col gap-4 items-center justify-center">
+    <div className="flex w-full flex-col gap-4 items-center justify-center text-xs sm:text-lg">
       <SearchBar
         placeholder="Enter a search term to find similar responses..."
         value={searchTerm}

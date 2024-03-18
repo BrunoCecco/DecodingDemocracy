@@ -29,7 +29,7 @@ export default function Home() {
   }, []);
 
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24 text-left">
+    <main className="flex min-h-screen flex-col items-center justify-between p-12 sm:p-24 text-left">
       <div className="w-full flex flex-col justify-center">
         <h1 className="my-6">Consultations</h1>
         <div className="flex flex-col gap-8 mb-12">

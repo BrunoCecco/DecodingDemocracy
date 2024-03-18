@@ -53,7 +53,7 @@ export default function Page({ params }: { params: { id: string } }) {
   };
 
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24">
+    <main className="flex min-h-screen flex-col items-center justify-between p-12 sm:p-24">
       <div className="w-full flex flex-col items-center justify-between gap-8">
         <h1>{consultation.consultation_name}</h1>
         <div className="font-bold">
@@ -83,7 +83,7 @@ export default function Page({ params }: { params: { id: string } }) {
           </a>
         </div>
         {/* Search Bar */}
-        <div className="relative w-1/2">
+        <div className="relative w-full sm:w-1/2">
           <FaSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
           <input
             type="text"
