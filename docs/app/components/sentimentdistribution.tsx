@@ -10,12 +10,6 @@ import { Bar } from 'react-chartjs-2';
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip);
 
-interface ITopic {
-  0: string; // id
-  1: any; // chart data
-  2: number; // number of responses
-}
-
 const options = {
   indexAxis: 'y' as const,
   layout: {
@@ -49,34 +43,35 @@ const options = {
   },
 };
 
-const CommonTopics = ({
-  topics,
+const SentimentDistribution = ({
+  positive,
+  negative,
   title,
 }: {
-  topics: ITopic[];
+  positive: number;
+  negative: number;
   title?: string;
 }) => {
-  console.log(topics);
+  const data = {
+    labels: ['Positive', 'Negative'],
+    datasets: [
+      {
+        label: 'Sentiment Distribution',
+        data: [positive, negative],
+        backgroundColor: ['rgba(75, 192, 192, 0.2)', 'rgba(255, 99, 132, 0.2)'],
+        borderColor: ['rgba(75, 192, 192, 1)', 'rgba(255, 99, 132, 1)'],
+        borderWidth: 1,
+      },
+    ],
+  };
   return (
-    <div className="mt-8 flex flex-col items-center">
+    <div className="my-8 flex flex-col items-center justify-center">
       <h2>{title}</h2>
-      <div className="flex items-center flex-wrap justify-center mt-8 gap-4">
-        {topics.map((topic: ITopic, i: number) => {
-          return (
-            <div
-              key={i}
-              className="w-[33vw] h-[20vw] text-center flex flex-col items-center bg-white rounded-md p-4"
-            >
-              <div>
-                Topic {topic[0]?.split('-')[2]} ({topic[2]} responses)
-              </div>
-              <Bar data={topic[1]} options={options} />
-            </div>
-          );
-        })}
+      <div className="flex items-center flex-wrap w-[50vw] h-[35vw] justify-center gap-4 mt-8 bg-white shadow-lg rounded-md p-4">
+        <Bar data={data} options={options} />
       </div>
     </div>
   );
 };
 
-export default CommonTopics;
+export default SentimentDistribution;
