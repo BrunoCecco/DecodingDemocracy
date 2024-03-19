@@ -1,5 +1,5 @@
 from flask import Flask
-from routes import consultations, responders, questions, responses, topics
+from api.routes import consultations, responders, questions, responses, topics
 from flask_cors import CORS
 
 app = Flask(__name__)
@@ -12,5 +12,5 @@ app.register_blueprint(questions.bp)
 app.register_blueprint(responses.bp)
 app.register_blueprint(topics.bp)
 
-if __name__ == '__main__':    
-    app.run(debug=True)
+if __name__ == '__main__':        
+    app.run()

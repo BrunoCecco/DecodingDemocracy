@@ -1,5 +1,5 @@
 from flask import Blueprint, jsonify
-from db import get_db_connection
+from api.db import get_db_connection
 from functools import lru_cache # to cache the results of the functions
 
 bp = Blueprint('responders', __name__, url_prefix='/api/responders')

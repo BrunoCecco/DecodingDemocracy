@@ -1,10 +1,11 @@
 import sqlite3
 import os
-DB_PATH = os.environ.get('DB_PATH')
-print(DB_PATH, "DB_PATH")
+from sentence_transformers import SentenceTransformer
+
+model = SentenceTransformer('all-MiniLM-L6-v2') # Load pre-trained sentence transformer model
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-db_path = os.path.join(BASE_DIR, DB_PATH)
+db_path = os.path.join(BASE_DIR, 'db.sqlite')
 
 # Custom row factory to return rows as dictionaries
 def dict_factory(cursor, row):

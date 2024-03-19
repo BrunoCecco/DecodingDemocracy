@@ -1,12 +1,10 @@
 from flask import Blueprint, jsonify, request
-from db import get_db_connection
-from routes.utils import semantic_similarity_text, pre_process, stopwords
+from api.db import get_db_connection, model
+from api.routes.utils import semantic_similarity_text, pre_process, stopwords
 import numpy as np
-from sentence_transformers import SentenceTransformer
 from functools import lru_cache # to cache the results of the functions
 
 bp = Blueprint('responses', __name__, url_prefix='/api/responses')
-model = SentenceTransformer('all-MiniLM-L6-v2') # Load pre-trained sentence transformer model
 
 # get all responses for a given responder
 @bp.route('/<int:responder_id>', methods=['GET'])
