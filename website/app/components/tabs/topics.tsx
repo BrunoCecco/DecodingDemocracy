@@ -53,6 +53,7 @@ export default function Page({ questionid }: { questionid: string }) {
     window.scrollTo(0, 0);
     const fetchData = async () => {
       var sentimentData: any;
+      console.log(selectedTopic);
       if (selectedTopic === null) {
         setSelectedTopic(defaultTopic);
         sentimentData = await getSentiment(questionid);
@@ -94,12 +95,7 @@ export default function Page({ questionid }: { questionid: string }) {
           })
         )
       );
-      const commonTopicsData: any = await getCommonTopics(
-        questionid,
-        topicsLimit,
-        wordsLimit
-      );
-      setSelectedTopics(commonTopicsData);
+      filterTopics(selectedTopic.value);
       setRendered(true);
     };
     fetchData();
