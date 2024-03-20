@@ -8,8 +8,7 @@
     "dev": "concurrently \"npm run next-dev\" \"npm run flask-dev\"",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint",
-    "production": "concurrently \"next start\" \"python3 -m flask --app api/app run -p 5328\""
+    "lint": "next lint"
   },
   "dependencies": {
     "@vercel/postgres": "^0.7.2",

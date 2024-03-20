@@ -1,11 +1,9 @@
 // File handles all API requests to the server
 
-const URL = 'http://localhost:3000';
-
 // Function to make a GET request to the server
 export const getRequest = async (url: string) => {
   try {
-    const response = await fetch(`${URL}${url}`);
+    const response = await fetch(`${url}`);
     const data = await response.json();
     return data;
   } catch (error) {

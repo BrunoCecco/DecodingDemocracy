@@ -50,10 +50,6 @@ export default function Page({ questionid }: { questionid: string }) {
   const defaultTopic = { label: 'Select a topic', value: '' };
 
   useEffect(() => {
-    setSelectedTopic(defaultTopic);
-  }, [questionid]);
-
-  useEffect(() => {
     window.scrollTo(0, 0);
     const fetchData = async () => {
       var sentimentData: any;

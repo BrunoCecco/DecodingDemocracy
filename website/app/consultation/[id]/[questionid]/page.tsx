@@ -41,6 +41,10 @@ export default function Page({
   const [isMultipleChoice, setIsMultipleChoice] = useState(false);
   const [multipleChoiceData, setMultipleChoiceData] = useState<any>([]);
   const [selectedTab, setSelectedTab] = useLocalStorage('selectedTab', 0);
+  const [selectedTopic, setSelectedTopic] = useLocalStorage('selectedTopic', {
+    label: 'Select a topic',
+    value: '',
+  });
   const [rendered, setRendered] = useState(false);
 
   useEffect(() => {
@@ -62,6 +66,10 @@ export default function Page({
     };
     fetchData();
   }, []);
+
+  useEffect(() => {
+    setSelectedTopic({ label: 'Select a topic', value: '' });
+  }, [params.questionid]);
 
   return rendered ? (
     <main className="flex min-h-screen flex-col items-center justify-between p-4 sm:p-24">

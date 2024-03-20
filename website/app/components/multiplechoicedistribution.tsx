@@ -63,14 +63,11 @@ const MultipleChoiceDistribution = ({ data }: { data: IOption[] }) => {
   return (
     <div className="my-8 flex flex-col items-center justify-center">
       <h2 className="text-center">Multiple Choice Distribution</h2>
-      <div className="flex items-center flex-wrap w-full h-[300px] sm:w-[50vw] sm:h-[35vw] justify-center gap-4 mt-8 bg-white shadow-lg rounded-md p-4">
+      <div className="flex items-center flex-wrap w-full mb-2 h-[300px] sm:w-[50vw] sm:h-[35vw] justify-center gap-4 mt-8 bg-white shadow-lg rounded-md p-4">
         <Bar data={chartData} options={options} />
       </div>
       {labels?.map((label, i) => (
-        <div
-          key={i}
-          className="px-4 py-2 cursor-pointer hover:bg-blue-100 w-full"
-        >
+        <div key={i} className="text-left w-full">
           {i + 1}: {label}
         </div>
       ))}

@@ -91,6 +91,7 @@ def similar_responses(question_id, text):
     c = conn.cursor()
     offset = int(request.args.get('offset')) if request.args.get('offset') else 0
     limit = int(request.args.get('limit')) if request.args.get('limit') else 10
+
     c.execute('''
         SELECT response_embeddings as embeddings FROM Question
         WHERE id = ?''', (question_id,))
