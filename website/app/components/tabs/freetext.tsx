@@ -15,7 +15,7 @@ export default function FreeText({ questionid }: { questionid: string }) {
   const [limit, setLimit] = useState(20);
   const [filteredResponses, setFilteredResponses] = useState<IResponse[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
-  const [order, setOrder] = useState('');
+  const [order, setOrder] = useState<string | undefined>(undefined);
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -35,7 +35,7 @@ export default function FreeText({ questionid }: { questionid: string }) {
     fetchData();
   }, [offset, limit]);
 
-  const changeOrder = async (order: string) => {
+  const changeOrder = async (order?: string) => {
     setOrder(order);
     const responsesData: any = await getResponses(
       questionid,
@@ -57,7 +57,8 @@ export default function FreeText({ questionid }: { questionid: string }) {
         questionid,
         searchTerm,
         offset,
-        limit
+        limit,
+        order
       );
       setFilteredResponses(responsesData);
     }
@@ -73,7 +74,7 @@ export default function FreeText({ questionid }: { questionid: string }) {
       />
       <Dropdown
         options={[
-          { label: 'Order by', value: '' },
+          { label: 'Order by', value: undefined },
           { label: 'Order by most negative', value: 'asc' },
           { label: 'Order by most positive', value: 'desc' },
         ]}

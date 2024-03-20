@@ -33,9 +33,15 @@ export const searchResponses = async (
   questionid: string,
   term: string,
   offset: number,
-  limit: number
+  limit: number,
+  order?: string // optional parameter
 ) => {
   const encodedSearchTerm = encodeURIComponent(term);
+  if (order) {
+    return await getRequest(
+      `/api/responses/search/${questionid}/${encodedSearchTerm}?offset=${offset}&limit=${limit}&order=${order}`
+    );
+  }
   return await getRequest(
     `/api/responses/search/${questionid}/${encodedSearchTerm}?offset=${offset}&limit=${limit}`
   );

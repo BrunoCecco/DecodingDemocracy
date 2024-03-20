@@ -37,13 +37,18 @@ def response(question_id):
 
 # search for responses containing a specific term
 @bp.route('/search/<string:question_id>/<string:search_term>', methods=['GET'])
-@lru_cache(maxsize=32)
 def search_responses(question_id, search_term):
     conn = get_db_connection()
     c = conn.cursor()
     offset = request.args.get('offset')
     limit = request.args.get('limit')
-    c.execute('SELECT * FROM Response WHERE question_id = ? AND response LIKE ? LIMIT ? OFFSET ?', (question_id, '%' + search_term + '%', limit, offset))
+    order = request.args.get('order')
+    if order == 'asc':
+        c.execute('SELECT * FROM Response WHERE question_id = ? AND response LIKE ? ORDER BY sentiment_value ASC LIMIT ? OFFSET ?', (question_id, '%' + search_term + '%', limit, offset))
+    elif order == 'desc':
+        c.execute('SELECT * FROM Response WHERE question_id = ? AND response LIKE ? ORDER BY sentiment_value DESC LIMIT ? OFFSET ?', (question_id, '%' + search_term + '%', limit, offset))
+    else:
+        c.execute('SELECT * FROM Response WHERE question_id = ? AND response LIKE ? LIMIT ? OFFSET ?', (question_id, '%' + search_term + '%', limit, offset))
     responses = c.fetchall()
     conn.close()
     return jsonify(responses)

@@ -10,7 +10,7 @@ interface DropdownProps {
 
 interface IOption {
   label: string;
-  value: string;
+  value?: string;
 }
 
 const Dropdown: React.FC<DropdownProps> = ({
