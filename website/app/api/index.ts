@@ -15,8 +15,14 @@ export const getRequest = async (url: string) => {
 export const getResponses = async (
   questionid: string,
   offset: number,
-  limit: number
+  limit: number,
+  order?: string // optional parameter
 ) => {
+  if (order) {
+    return await getRequest(
+      `/api/responses/${questionid}?offset=${offset}&limit=${limit}&order=${order}`
+    );
+  }
   return await getRequest(
     `/api/responses/${questionid}?offset=${offset}&limit=${limit}`
   );

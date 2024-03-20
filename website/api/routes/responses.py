@@ -19,13 +19,18 @@ def responses(responder_id):
 
 # get all responses for a given question, with offset and limit
 @bp.route('/<string:question_id>', methods=['GET'])
-@lru_cache(maxsize=32)
 def response(question_id):    
     conn = get_db_connection()
     c = conn.cursor()    
     offset = request.args.get('offset')
     limit = request.args.get('limit')
-    c.execute('SELECT * FROM Response WHERE question_id = ? AND response IS NOT NULL LIMIT ? OFFSET ?', (question_id, limit, offset))
+    order = request.args.get('order')  
+    if order == 'asc':
+        c.execute('SELECT * FROM Response WHERE question_id = ? AND response IS NOT NULL ORDER BY sentiment_value ASC LIMIT ? OFFSET ?', (question_id, limit, offset))
+    elif order == 'desc':
+        c.execute('SELECT * FROM Response WHERE question_id = ? AND response IS NOT NULL ORDER BY sentiment_value DESC LIMIT ? OFFSET ?', (question_id, limit, offset))
+    else:
+        c.execute('SELECT * FROM Response WHERE question_id = ? AND response IS NOT NULL LIMIT ? OFFSET ?', (question_id, limit, offset))
     response = c.fetchall()    
     conn.close()
     return jsonify(response)
