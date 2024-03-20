@@ -15,7 +15,7 @@ export default function FreeText({ questionid }: { questionid: string }) {
   const [limit, setLimit] = useState(20);
   const [filteredResponses, setFilteredResponses] = useState<IResponse[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
-  const [order, setOrder] = useState<string | undefined>(undefined);
+  const [order, setOrder] = useState('');
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -35,7 +35,7 @@ export default function FreeText({ questionid }: { questionid: string }) {
     fetchData();
   }, [offset, limit]);
 
-  const changeOrder = async (order?: string) => {
+  const changeOrder = async (order: string) => {
     setOrder(order);
     const responsesData: any = await getResponses(
       questionid,
@@ -53,13 +53,23 @@ export default function FreeText({ questionid }: { questionid: string }) {
     } else {
       // if searchTerm has question marks, it will confuse the request arguments so we remove them
       var term = searchTerm.replace(/\?/g, '');
-      const responsesData: any = await searchResponses(
-        questionid,
-        searchTerm,
-        offset,
-        limit,
-        order
-      );
+      var responsesData: any = [];
+      if (order !== '') {
+        responsesData = await searchResponses(
+          questionid,
+          term,
+          offset,
+          limit,
+          order
+        );
+      } else {
+        responsesData = await searchResponses(
+          questionid,
+          searchTerm,
+          offset,
+          limit
+        );
+      }
       setFilteredResponses(responsesData);
     }
   };
@@ -74,7 +84,7 @@ export default function FreeText({ questionid }: { questionid: string }) {
       />
       <Dropdown
         options={[
-          { label: 'Order by', value: undefined },
+          { label: 'Order by', value: '' },
           { label: 'Order by most negative', value: 'asc' },
           { label: 'Order by most positive', value: 'desc' },
         ]}
