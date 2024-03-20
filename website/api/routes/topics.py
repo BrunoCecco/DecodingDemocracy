@@ -38,7 +38,6 @@ def common_topics(question_id):
                 ''', (question_id, limit))
     topics = c.fetchall()    
     conn.close()
-    print(topics)
     return jsonify(topics)
 
 # get most common words and their scores in a topic
@@ -77,7 +76,6 @@ def search_responses(question_id, topic_id):
 def num_responses(topic_id):
     conn = get_db_connection()
     c = conn.cursor()    
-    print(topic_id)
     c.execute('SELECT COUNT(*) as topic_count FROM Response WHERE topic_id = ?', (topic_id,))
     count = c.fetchone()
     conn.close()
