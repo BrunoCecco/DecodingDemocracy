@@ -22,7 +22,7 @@ The following section will outline the steps required to reproduce the project, 
 6. Copy the notebook [notebook.ipynb](./notebook.ipynb) into a Google Colab notebook under the `DecodingDemocracy/` folder.
 7. Run the first 3 cells in the notebook to create and populate the database called `db.sqlite` with the consultations data. Check these were created successfully.
 
-## Instructions to run the web dashboard
+## Instructions to run the web dashboard locally
 
 1. Clone this repository to your local machine (`git clone https://github.com/BrunoCecco/DecodingDemocracy.git`).
 2. `cd website`
@@ -35,3 +35,7 @@ The following section will outline the steps required to reproduce the project, 
 ### Colab notebooks
 
 https://colab.research.google.com/drive/1WrPmMlMB9fAc4MB5oz5OaVdsjBPGShkN?usp=sharing
+
+### Live web dashboard (on St Andrews CS school servers)
+
+https://bac4.teaching.cs.st-andrews.ac.uk
